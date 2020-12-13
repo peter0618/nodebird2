@@ -4,13 +4,16 @@ const morgan = require('morgan');
 const path = require('path');
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport');
 require('dotenv').config();
 
 const pageRouter = require('./routes/page');
 const { sequelize } = require('./models');
+const passportConfig = require('./passport');
 
 const app = express();
 sequelize.sync();
+passportConfig(passport);
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -31,6 +34,8 @@ app.use(session({
     }
 }));
 app.use(flash()); //cookieParser, session 뒤에 위치해야 함. 일회성 메시지들을 웹 브라우저에 나타낼 때 용이함.
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', pageRouter);
 
