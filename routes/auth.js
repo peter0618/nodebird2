@@ -49,4 +49,14 @@ router.get('/logout', isLoggedIn, (req, res) => {
     req.session.destroy(); // req.session 내용 제거
     res.redirect('/');
 });
+
+router.get('/kakao', passport.authenticate('kakao'));
+
+router.get('/kakao/callback', passport.authenticate('kakao', {
+    failureRedirect: '/',
+}), (req, res) => {
+    res.redirect('/');
+});
+
+
 module.exports = router;
